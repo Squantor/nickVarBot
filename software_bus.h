@@ -15,13 +15,13 @@ typedef struct {
 } softwareBusState;
 
 // subscribe
-results softwareBusSubscribe(softwareBusState *Bus, softwareBusHandler handler);
+results softwareBusSubscribe(softwareBusState *swBus, softwareBusHandler handler);
 
 // unsubscribe
-results softwareBusUnsubscribe(softwareBusState *Bus, softwareBusHandler handler);
+results softwareBusUnsubscribe(softwareBusState *swBus, softwareBusHandler handler);
 
 // post event
-results softwareBusPost(softwareBusState *Bus, int busEvent, void *busData);
+results softwareBusPost(softwareBusState *swBus, int busEvent, void *busData);
 
 #endif
 

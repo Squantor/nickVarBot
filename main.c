@@ -5,9 +5,17 @@
 #include <ctype.h>
 #include <netdb.h>
 #include <stdarg.h>
+
+#include "results.h"
+
 #include "./inih/ini.h"
 
 #include "nickVarBot.h"
+#include "software_bus.h"
+#include "irc_event.h"
+#include "irc_event_print/irc_event_print.h"
+
+softwareBusState    ircEvents;
 
 static int config_handler(void* cfg, const char* section,  const char* name, const char* value)
 {
@@ -62,12 +70,17 @@ int main() {
     config.botIrcState = disconnected;
 
     char *user, *command, *where, *message, *sep, *target;
+    sayEventData sayEvent;
     int i, j, k, l, sl, o = -1, start, wordcount;
     char buf[513];
     struct addrinfo hints, *res;
     // TODO create a .nickVarBot dir for config and state storage
     memset(currentnickvars, 0, sizeof currentnickvars);
     // TODO load current vars from config file
+
+    // setup software busses
+    memset(&ircEvents, 0, sizeof(softwareBusState));
+    softwareBusSubscribe(&ircEvents, ircEventDebugPrint);
 
     if(ini_parse("nickvarbot.cfg" , config_handler, &config) < 0)
     {
@@ -83,6 +96,7 @@ int main() {
 
     raw("USER %s 0 0 :%s\r\n", config.nick, config.nick);
     raw("NICK %s\r\n", config.nick);
+
 
     while ((sl = read(conn, sbuf, 512)))
     {
@@ -149,8 +163,12 @@ int main() {
                             target = where;
                         else
                             target = user;
-                        printf("[from: %s] [reply-with: %s] [where: %s] [reply-to: %s] %s", user, command, where, target, message);
-
+                        sayEvent.user = user;
+                        sayEvent.command = command;
+                        sayEvent.where = where;
+                        sayEvent.target = target;
+                        sayEvent.message = message;
+                        softwareBusPost(&ircEvents, ircSay, &sayEvent);
 
                         char messagebuf[512];
                         char *token;

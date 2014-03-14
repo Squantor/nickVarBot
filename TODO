@@ -1,2 +1,5 @@
 open todo's:
-start parsing channel messages and find interesting "vars"
+* create software bus
+* add software bus that handles all text events
+    - #channel, user, line
+* rework var parsing into software bus events
