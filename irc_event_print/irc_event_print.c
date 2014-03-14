@@ -8,7 +8,7 @@
 results ircEventDebugPrint(int busEvent, void *busData)
 {
     sayEventData * ircEvent = busData;
-    printf("ircEventDebugPrint [from: %s] [reply-with: %s] [where: %s] [reply-to: %s] %s", ircEvent->user, ircEvent->command, ircEvent->where, ircEvent->target, ircEvent->message);
+    printf("[from: %s] [reply-with: %s] [where: %s] [reply-to: %s] %s", ircEvent->user, ircEvent->command, ircEvent->where, ircEvent->target, ircEvent->message);
     return noError;
 }
 
